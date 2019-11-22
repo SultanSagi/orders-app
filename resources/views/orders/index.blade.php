@@ -26,7 +26,7 @@
                     <div class="card-body">
                         <form action="?" method="GET">
                             <div class="row">
-                                <div class="col-sm-4">
+                                <div class="col-sm-3">
                                     <div class="form-group">
                                         <select name="date" id="date" class="form-control">
                                             <option value="">All time</option>
@@ -35,12 +35,27 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-3">
                                     <div class="form-group">
-                                        <input id="q" class="form-control" name="q" value="{{ request('q') }}" placeholder="Enter search term...">
+                                        <select id="user_id" class="form-control" name="user_id">
+                                            <option value="">All users</option>
+                                            @foreach ($users as $user => $label)
+                                                <option value="{{ $user }}"{{ $user == request('user_id') ? ' selected' : '' }}>{{ $label }}</option>
+                                            @endforeach;
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <select id="product_id" class="form-control" name="product_id">
+                                            <option value="">All products</option>
+                                            @foreach ($products as $product => $label)
+                                                <option value="{{ $product }}"{{ $product == request('product_id') ? ' selected' : '' }}>{{ $label }}</option>
+                                            @endforeach;
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-primary">Search</button>
                                     </div>
@@ -78,9 +93,12 @@
                             <a href="/orders/{{$order->id}}/edit">
                                 Edit
                             </a>
-                             <a href="#">
-                                Delete
-                            </a>
+
+                            <form method="POST" action="/orders/{{$order->id}}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-link p-0">Delete</button>
+                            </form>
                         </td>
                     </tr>
                 @empty

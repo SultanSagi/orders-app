@@ -22,8 +22,16 @@ class OrdersController extends Controller
         $orders = Order::latest();
 
         if($date = request('date')) {
-            $date = $date == 'today' ? Carbon::now()->subDay() : Carbon::now()->subWeek();
+            $date = $date == 'today' ? Carbon::today()->startOfDay() : Carbon::now()->subWeek();
             $orders->where('created_at', '>=', $date);
+        }
+
+        if($product = request('product_id')) {
+            $orders->where('product_id', $product);
+        }
+
+        if($user = request('user_id')) {
+            $orders->where('user_id', $user);
         }
 
         $count = $orders->count();
@@ -31,16 +39,6 @@ class OrdersController extends Controller
         $orders = $orders->paginate(10);
 
         return view('orders.index', compact('orders', 'users', 'products', 'count'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -61,17 +59,6 @@ class OrdersController extends Controller
         Order::create($attributes + ['total' => $product->price * $attributes['quantity']]);
 
         return redirect('/');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Order $order)
-    {
-        //
     }
 
     /**
@@ -112,8 +99,9 @@ class OrdersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Order  $order
+     * @param  \App\Order $order
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function destroy(Order $order)
     {
