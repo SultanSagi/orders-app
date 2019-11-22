@@ -72,7 +72,7 @@
                     <td>{{ money_format('%.2n', $order->total/100) }} EUR</td>
                     <td>{{ $order->created_at->format('d M Y, g:iA') }}</td>
                     <td>
-                        <a href="#">
+                        <a href="/orders/{{$order->id}}/edit">
                             Edit
                         </a>
                          <a href="#">

@@ -73,19 +73,31 @@ class OrdersController extends Controller
      */
     public function edit(Order $order)
     {
-        //
+        $users = User::pluck('name', 'id');
+        $products = Product::pluck('name', 'id');
+
+        return view('orders.edit', compact('order', 'users', 'products'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Order $order)
+    public function update(Order $order)
     {
-        //
+        $attributes = request()->validate([
+            'user_id' => 'required|sometimes',
+            'product_id' => 'required|sometimes',
+            'quantity' => 'required|sometimes',
+        ]);
+
+        $product = Product::find($attributes['product_id']);
+
+        $order->update($attributes + ['total' => $product->price * $attributes['quantity']]);
+
+        return redirect('/');
     }
 
     /**

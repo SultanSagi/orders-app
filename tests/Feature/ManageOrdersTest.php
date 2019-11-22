@@ -57,4 +57,30 @@ class ManageOrdersTest extends TestCase
         $this->get('/')
             ->assertSee($order->user->name);
     }
+
+    /**
+     * Edit existing order
+     *
+     * @return void
+     */
+    public function testEdit()
+    {
+        $this->withoutExceptionHandling();
+
+        $order = factory('App\Order')->create();
+
+        $product = factory('App\Product')->create(['price' => 200]);
+
+        $attributes = [
+            'user_id' => factory('App\User')->create()->id,
+            'product_id' => $product->id,
+            'quantity' => $this->faker->numberBetween(1,20),
+        ];
+
+        $this->patch("orders/{$order->id}", $attributes);
+
+        $this->assertCount(1, Order::all());
+
+        $this->assertDatabaseHas('orders', $attributes + ['total' => $attributes['quantity']*$product->price]);
+    }
 }
