@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Order;
 use App\Product;
 use App\User;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class OrdersController extends Controller
 {
@@ -19,9 +19,18 @@ class OrdersController extends Controller
         $users = User::pluck('name', 'id');
         $products = Product::pluck('name', 'id');
 
-        $orders = Order::latest()->paginate(3);
+        $orders = Order::latest();
 
-        return view('orders.index', compact('orders', 'users', 'products'));
+        if($date = request('date')) {
+            $date = $date == 'today' ? Carbon::now()->subDay() : Carbon::now()->subWeek();
+            $orders->where('created_at', '>=', $date);
+        }
+
+        $count = $orders->count();
+
+        $orders = $orders->paginate(10);
+
+        return view('orders.index', compact('orders', 'users', 'products', 'count'));
     }
 
     /**
