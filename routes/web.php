@@ -12,7 +12,7 @@
 */
 
 Route::get('/', 'OrdersController@index');
-Route::get('/orders/{order}/edit', 'OrdersController@edit');
+Route::get('orders/{order}/edit', 'OrdersController@edit');
 Route::post('orders', 'OrdersController@store');
 Route::patch('orders/{order}', 'OrdersController@update');
 Route::delete('orders/{order}', 'OrdersController@destroy');

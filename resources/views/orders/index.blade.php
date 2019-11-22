@@ -37,6 +37,11 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
+                                        <input type="text" class="form-control" name="q" placeholder="Search user or product ...">
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
                                         <select id="user_id" class="form-control" name="user_id">
                                             <option value="">All users</option>
                                             @foreach ($users as $user => $label)
@@ -45,7 +50,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <select id="product_id" class="form-control" name="product_id">
                                             <option value="">All products</option>
@@ -55,7 +60,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-primary">Search</button>
                                     </div>
@@ -63,7 +68,7 @@
                             </div>
                         </form>
 
-                        Rows count: {{ $count }}
+                        Total orders count: {{ $count }}
                     </div>
                 </div>
 
@@ -83,9 +88,9 @@
 
                 @forelse ($orders as $order)
                     <tr>
-                        <td>{{ $order->user->name }}</td>
-                        <td>{{ $order->product->name }}</td>
-                        <td>{{ money_format('%.2n', $order->product->price/100) }} EUR</td>
+                        <td>{{ $order->user }}</td>
+                        <td>{{ $order->product }}</td>
+                        <td>{{ money_format('%.2n', $order->price/100) }} EUR</td>
                         <td>{{ $order->quantity }}</td>
                         <td>{{ money_format('%.2n', $order->total/100) }} EUR</td>
                         <td>{{ $order->created_at->format('d M Y, g:iA') }}</td>

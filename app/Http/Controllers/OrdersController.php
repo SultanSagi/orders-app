@@ -19,11 +19,11 @@ class OrdersController extends Controller
         $users = User::pluck('name', 'id');
         $products = Product::pluck('name', 'id');
 
-        $orders = Order::latest();
+        $orders = Order::latest('orders.created_at');
 
         if($date = request('date')) {
             $date = $date == 'today' ? Carbon::today()->startOfDay() : Carbon::now()->subWeek();
-            $orders->where('created_at', '>=', $date);
+            $orders->where('orders.created_at', '>=', $date);
         }
 
         if($product = request('product_id')) {
@@ -34,9 +34,30 @@ class OrdersController extends Controller
             $orders->where('user_id', $user);
         }
 
+        if($q = request('q')) {
+            $orders->where('users.name', 'like', '%' . $q . '%')
+                    ->orWhere('products.name', 'like', '%' . $q . '%');
+        }
+
         $count = $orders->count();
 
-        $orders = $orders->paginate(10);
+        $orders = $orders
+            ->join('users', 'orders.user_id', '=', 'users.id')
+            ->join('products', 'orders.product_id', '=', 'products.id')
+            ->selectRaw(
+                'users.name user,
+                products.name product,
+                products.price,
+                orders.id,
+                orders.quantity,
+                orders.total,
+                orders.created_at'
+            )
+            ->paginate(10);
+
+        if(request()->expectsJson()) {
+            return response($orders, 200);
+        }
 
         return view('orders.index', compact('orders', 'users', 'products', 'count'));
     }
