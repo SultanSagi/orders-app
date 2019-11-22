@@ -83,4 +83,20 @@ class ManageOrdersTest extends TestCase
 
         $this->assertDatabaseHas('orders', $attributes + ['total' => $attributes['quantity']*$product->price]);
     }
+
+    /**
+     * Delete an order
+     *
+     * @return void
+     */
+    public function testDelete()
+    {
+        $this->withoutExceptionHandling();
+
+        $order = factory('App\Order')->create();
+
+        $this->delete('orders/' . $order->id);
+
+        $this->assertDatabaseMissing('orders', $order->only('id'));
+    }
 }
