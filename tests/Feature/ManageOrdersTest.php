@@ -5,17 +5,22 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ExampleTest extends TestCase
+class ManageOrdersTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
-     * A basic test example.
+     * See a list of all orders
      *
      * @return void
      */
-    public function testBasicTest()
+    public function testListAll()
     {
-        $response = $this->get('/');
+        $this->withoutExceptionHandling();
 
-        $response->assertStatus(200);
+        $order = factory('App\Order')->create();
+
+        $this->get('')
+            ->assertSee($order->user->name);
     }
 }
