@@ -12,3 +12,4 @@
 */
 
 Route::get('/', 'OrdersController@index');
+Route::post('orders', 'OrdersController@store');

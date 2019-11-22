@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Order;
+use App\Product;
+use App\User;
 use Illuminate\Http\Request;
 
 class OrdersController extends Controller
@@ -14,9 +16,12 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        $orders = Order::paginate(3);
+        $users = User::pluck('name', 'id');
+        $products = Product::pluck('name', 'id');
 
-        return view('orders.index', compact('orders'));
+        $orders = Order::latest()->paginate(3);
+
+        return view('orders.index', compact('orders', 'users', 'products'));
     }
 
     /**
@@ -32,12 +37,21 @@ class OrdersController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store()
     {
-        //
+        $attributes = request()->validate([
+            'user_id' => 'required',
+            'product_id' => 'required',
+            'quantity' => 'required',
+        ]);
+
+        $product = Product::find($attributes['product_id']);
+
+        Order::create($attributes + ['total' => $product->price * $attributes['quantity']]);
+
+        return redirect('/');
     }
 
     /**
