@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Order;
 use App\Product;
 use App\User;
-use Carbon\Carbon;
 
 class OrdersController extends Controller
 {
@@ -19,33 +18,8 @@ class OrdersController extends Controller
         $users = User::pluck('name', 'id');
         $products = Product::pluck('name', 'id');
 
-        $orders = Order::latest('orders.created_at');
-
-        if($date = request('date')) {
-            $date = $date == 'today' ? Carbon::today()->startOfDay() : Carbon::now()->subWeek();
-            $orders->where('orders.created_at', '>=', $date);
-        }
-
-        if($product = request('product_id')) {
-            $orders->where('product_id', $product);
-        }
-
-        if($user = request('user_id')) {
-            $orders->where('user_id', $user);
-        }
-
-        if($q = request('q')) {
-            $orders->whereHas('user', function ($query) use ($q) {
-                $query->where('name', 'like', '%' . $q . '%');
-            })
-            ->orWhereHas('product', function ($query) use ($q) {
-                $query->where('name', 'like', '%' . $q . '%');
-            });
-        }
-
-        $count = $orders->count();
-
-        $orders = $orders
+        $orders = Order::latest('created_at')
+            ->filter(request(['date', 'product_id', 'user_id', 'q']))
             ->with('user', 'product')
             ->paginate(10);
 
@@ -53,7 +27,7 @@ class OrdersController extends Controller
             return response($orders, 200);
         }
 
-        return view('orders.index', compact('orders', 'users', 'products', 'count'));
+        return view('orders.index', compact('orders', 'users', 'products'));
     }
 
     /**
