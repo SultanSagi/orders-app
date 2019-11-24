@@ -17,6 +17,7 @@ class CreateProductsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->unsignedInteger('price');
+            $table->unsignedInteger('discount')->nullable();
             $table->timestamps();
         });
     }

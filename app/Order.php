@@ -23,14 +23,16 @@ class Order extends Model
 
     public function getTotalAttribute()
     {
-        return $this->quantity * $this->product->price;
+        $rate = $this->product->discount && $this->quantity > 2 ? 1-$this->product->discount/100 : 1;
+
+        return $this->quantity * $this->product->price * $rate;
     }
 
     public function scopeFilter($query, $filters)
     {
         if(array_key_exists('date', $filters) && $date = $filters['date']) {
-            $date = $date == 'today' ? Carbon::today()->startOfDay() : Carbon::now()->subWeek();
-            $query->where('orders.created_at', '>=', $date);
+            $date = $date == 'today' ? Carbon::today() : Carbon::now()->subWeek();
+            $query->where('orders.created_at', '>=', $date->startOfDay());
         }
 
         if(array_key_exists('product_id', $filters) && $product = $filters['product_id']) {
@@ -42,11 +44,13 @@ class Order extends Model
         }
 
         if(array_key_exists('q', $filters) && $q = $filters['q']) {
-            $query->whereHas('user', function ($query) use ($q) {
-                $query->where('name', 'like', '%' . $q . '%');
-            })
-            ->orWhereHas('product', function ($query) use ($q) {
-                $query->where('name', 'like', '%' . $q . '%');
+            $query->where(function ($query) use ($q) {
+                $query->whereHas('user', function ($query) use ($q) {
+                    $query->where('name', 'like', '%' . $q . '%');
+                })
+                ->orWhereHas('product', function ($query) use ($q) {
+                    $query->where('name', 'like', '%' . $q . '%');
+                });
             });
         }
     }

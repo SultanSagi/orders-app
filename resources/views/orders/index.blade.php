@@ -37,7 +37,7 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="q" placeholder="Search user or product ...">
+                                        <input type="text" class="form-control" name="q" placeholder="Search user or product ..." value="{{request('q')}}">
                                     </div>
                                 </div>
                                 <div class="col-sm-2">

@@ -201,4 +201,22 @@ class ManageOrdersTest extends TestCase
             ->assertDontSee($orderNotByUser->product->name)
             ->assertDontSee($orderNotByUser2->product->name);
     }
+
+    /**
+     * Discount of 20% must be applied to the total cost of any order when at least 3 items of of "Pepsi Cola" are selected
+     *
+     * @return void
+     */
+    public function testDiscount()
+    {
+        $this->withoutExceptionHandling();
+
+        $product = factory('App\Product')->create(['name' => 'Pepsi Cola', 'price' => 16, 'discount' => 20]);
+
+        $orderWithPepsi = factory('App\Order')->create(['product_id' => $product->id, 'quantity' => 3]);
+
+       $this->assertEquals(
+            $orderWithPepsi->quantity * $product->price * (1 - $product->discount/100),
+            $orderWithPepsi->total);
+    }
 }
