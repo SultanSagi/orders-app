@@ -32,4 +32,16 @@ class OrderTest extends TestCase
 
         $this->assertInstanceOf('App\Product', $order->product);
     }
+
+    /**
+     * An order has a total cost
+     *
+     * @return void
+     */
+    public function testTotal()
+    {
+        $order = factory('App\Order')->create();
+
+        $this->assertEquals($order->quantity * $order->product->price, $order->total);
+    }
 }

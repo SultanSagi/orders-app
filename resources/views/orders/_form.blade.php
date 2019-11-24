@@ -24,7 +24,7 @@
 
 <div class="form-group">
     <label for="quantity" class="col-form-label">Quantity</label>
-    <input type="number" class="form-control{{ $errors->has('quantity') ? ' is-invalid' : '' }}" name="quantity" value="{{ old('quantity', $order->quantity) }}">
+    <input type="number" class="form-control{{ $errors->has('quantity') ? ' is-invalid' : '' }}" name="quantity" value="{{ old('quantity', $order->quantity) ?? 1 }}">
     @if ($errors->has('quantity'))
         <span class="invalid-feedback"><strong>{{ $errors->first('quantity') }}</strong></span>
     @endif

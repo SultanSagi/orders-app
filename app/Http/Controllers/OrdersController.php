@@ -35,24 +35,18 @@ class OrdersController extends Controller
         }
 
         if($q = request('q')) {
-            $orders->where('users.name', 'like', '%' . $q . '%')
-                    ->orWhere('products.name', 'like', '%' . $q . '%');
+            $orders->whereHas('user', function ($query) use ($q) {
+                $query->where('name', 'like', '%' . $q . '%');
+            })
+            ->orWhereHas('product', function ($query) use ($q) {
+                $query->where('name', 'like', '%' . $q . '%');
+            });
         }
 
         $count = $orders->count();
 
         $orders = $orders
-            ->join('users', 'orders.user_id', '=', 'users.id')
-            ->join('products', 'orders.product_id', '=', 'products.id')
-            ->selectRaw(
-                'users.name user,
-                products.name product,
-                products.price,
-                orders.id,
-                orders.quantity,
-                orders.total,
-                orders.created_at'
-            )
+            ->with('user', 'product')
             ->paginate(10);
 
         if(request()->expectsJson()) {
@@ -75,9 +69,7 @@ class OrdersController extends Controller
             'quantity' => 'required',
         ]);
 
-        $product = Product::find($attributes['product_id']);
-
-        Order::create($attributes + ['total' => $product->price * $attributes['quantity']]);
+        Order::create($attributes);
 
         return redirect('/');
     }
@@ -110,9 +102,7 @@ class OrdersController extends Controller
             'quantity' => 'required|sometimes',
         ]);
 
-        $product = Product::find($attributes['product_id']);
-
-        $order->update($attributes + ['total' => $product->price * $attributes['quantity']]);
+        $order->update($attributes);
 
         return redirect('/');
     }

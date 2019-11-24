@@ -23,7 +23,6 @@ class CreateOrdersTable extends Migration
                 ->references('id')
                 ->on('products')
                 ->onDelete('cascade');
-            $table->unsignedInteger('total');
             $table->unsignedInteger('quantity');
             $table->timestamps();
 

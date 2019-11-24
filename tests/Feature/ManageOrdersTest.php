@@ -49,10 +49,11 @@ class ManageOrdersTest extends TestCase
             'user_id' => $attributes['user_id'],
             'product_id' => $attributes['product_id'],
             'quantity' => $attributes['quantity'],
-            'total' => $attributes['quantity'] * $product->price,
         ]);
 
         $order = Order::latest()->first();
+
+        $this->assertSame($order->quantity*$order->product->price, $order->total);
 
         $this->get('/')
             ->assertSee($order->user->name);
@@ -81,7 +82,11 @@ class ManageOrdersTest extends TestCase
 
         $this->assertCount(1, Order::all());
 
-        $this->assertDatabaseHas('orders', $attributes + ['total' => $attributes['quantity']*$product->price]);
+        $this->assertDatabaseHas('orders', $attributes);
+
+        $order = Order::latest()->first();
+
+        $this->assertSame($order->quantity*$order->product->price, $order->total);
     }
 
     /**

@@ -88,11 +88,11 @@
 
                 @forelse ($orders as $order)
                     <tr>
-                        <td>{{ $order->user }}</td>
-                        <td>{{ $order->product }}</td>
+                        <td>{{ $order->user->name }}</td>
+                        <td>{{ $order->product->name }}</td>
                         <td>{{ money_format('%.2n', $order->price/100) }} EUR</td>
                         <td>{{ $order->quantity }}</td>
-                        <td>{{ money_format('%.2n', $order->total/100) }} EUR</td>
+                        <td>{{ money_format('%.2n', $order->total) }} EUR</td>
                         <td>{{ $order->created_at->format('d M Y, g:iA') }}</td>
                         <td>
                             <a href="/orders/{{$order->id}}/edit">
