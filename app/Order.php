@@ -25,7 +25,7 @@ class Order extends Model
     {
         $rate = $this->canBeCalculatedWithDiscount() ? 1-$this->product->discount/100 : 1;
 
-        return money_format('%.2n',$this->quantity * $this->product->price * $rate);
+        return $this->quantity * $this->product->price * $rate;
     }
 
     public function scopeFilter($query, $filters)

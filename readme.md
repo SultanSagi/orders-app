@@ -32,7 +32,6 @@ Next, create a .env file off of the .env.example and set the `APP_KEY` variable 
 ```bash
 cp .env.example .env
 php artisan key:generate
-php artisan storage:link
 ```
 
 Next, edit the .env file to hold your MySQL database credentials/host information.
@@ -42,6 +41,11 @@ Lastly, run the following command to migrate your database using the credentials
 ```bash
 php artisan migrate
 php artisan db:seed
+```
+
+Also we can check PHPUnit tests, by running:
+```bash
+vendor/bin/phpunit
 ```
 
 You should now be able to start the server using `php artisan serve` and go to http://localhost:8000 to view the app!

@@ -90,9 +90,9 @@
                     <tr>
                         <td>{{ $order->user->name }}</td>
                         <td>{{ $order->product->name }}</td>
-                        <td>{{ $order->product->price }} EUR</td>
+                        <td>{{ number_format(((float)$order->product->price/100), 2, '.', ',') }} EUR</td>
                         <td>{{ $order->quantity }}</td>
-                        <td>{{ $order->total }} EUR</td>
+                        <td>{{ number_format(((float)$order->total/100), 2, '.', ',') }} EUR</td>
                         <td>{{ $order->created_at->format('d M Y, g:iA') }}</td>
                         <td>
                             <a href="/orders/{{$order->id}}/edit">
