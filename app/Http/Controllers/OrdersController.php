@@ -33,9 +33,9 @@ class OrdersController extends Controller
     public function store()
     {
         $attributes = request()->validate([
-            'user_id' => 'required',
-            'product_id' => 'required',
-            'quantity' => 'required',
+            'user_id' => 'required|exists:users,id',
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|numeric|min:1|max:100000',
         ]);
 
         Order::create($attributes);
@@ -63,9 +63,9 @@ class OrdersController extends Controller
     public function update(Order $order)
     {
         $attributes = request()->validate([
-            'user_id' => 'required|sometimes',
-            'product_id' => 'required|sometimes',
-            'quantity' => 'required|sometimes',
+            'user_id' => 'required|exists:users,id',
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|numeric|min:1|max:100000',
         ]);
 
         $order->update($attributes);
