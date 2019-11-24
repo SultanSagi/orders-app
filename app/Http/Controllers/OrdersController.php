@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Order;
-use App\Product;
-use App\User;
 
 class OrdersController extends Controller
 {
@@ -15,9 +13,6 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        $users = User::pluck('name', 'id');
-        $products = Product::pluck('name', 'id');
-
         $orders = Order::latest('created_at')
             ->filter(request(['date', 'product_id', 'user_id', 'q']))
             ->with('user', 'product')
@@ -27,7 +22,7 @@ class OrdersController extends Controller
             return response($orders, 200);
         }
 
-        return view('orders.index', compact('orders', 'users', 'products'));
+        return view('orders.index', compact('orders'));
     }
 
     /**
@@ -56,10 +51,7 @@ class OrdersController extends Controller
      */
     public function edit(Order $order)
     {
-        $users = User::pluck('name', 'id');
-        $products = Product::pluck('name', 'id');
-
-        return view('orders.edit', compact('order', 'users', 'products'));
+        return view('orders.edit', compact('order'));
     }
 
     /**

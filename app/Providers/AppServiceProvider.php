@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\User;
+use App\Product;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        view()->composer(['orders.index', 'orders._form'], function($view) {
+            $view->with('users', User::pluck('name', 'id'));
+            $view->with('products', Product::pluck('name', 'id'));
+        });
     }
 
     /**

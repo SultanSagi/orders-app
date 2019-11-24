@@ -44,4 +44,26 @@ class OrderTest extends TestCase
 
         $this->assertEquals($order->quantity * $order->product->price, $order->total);
     }
+
+    /**
+     * We define if order can be calculated with discount
+     *
+     * @return void
+     */
+    public function testCanBeCalculatedWithDiscount()
+    {
+        $product = factory('App\Product')->create(['name' => 'Pepsi Cola', 'discount' => 20]);
+
+        $order = factory('App\Order')->create();
+
+        $this->assertFalse($order->canBeCalculatedWithDiscount());
+
+        $order = factory('App\Order')->create(['product_id' => $product->id, 'quantity' => 2]);
+
+        $this->assertFalse($order->canBeCalculatedWithDiscount());
+
+        $order = factory('App\Order')->create(['product_id' => $product->id, 'quantity' => 3]);
+
+        $this->assertTrue($order->canBeCalculatedWithDiscount());
+    }
 }

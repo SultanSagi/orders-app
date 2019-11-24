@@ -23,7 +23,7 @@ class Order extends Model
 
     public function getTotalAttribute()
     {
-        $rate = $this->product->discount && $this->quantity > 2 ? 1-$this->product->discount/100 : 1;
+        $rate = $this->canBeCalculatedWithDiscount() ? 1-$this->product->discount/100 : 1;
 
         return $this->quantity * $this->product->price * $rate;
     }
@@ -53,5 +53,10 @@ class Order extends Model
                 });
             });
         }
+    }
+
+    public function canBeCalculatedWithDiscount()
+    {
+        return $this->product->name == 'Pepsi Cola' && $this->product->discount && $this->quantity > 2;
     }
 }
